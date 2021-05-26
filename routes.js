@@ -12,7 +12,11 @@ const reqResHandler = (req, res) => {
         res.write(
         `<body>
             <form action="/message" method="POST">
-            <input type="text" name="message"><button type="submit">Send</button>
+            <text>name:</text>
+            <input type="text" name="name">
+            <text>message:</text>
+            <input type="text" name="message">
+            <button type="submit">Send</button>
             </form>
         </body>`
         )
@@ -29,9 +33,12 @@ const reqResHandler = (req, res) => {
 
         return req.on('end', () => {
             const parsedBody = Buffer.concat(body).toString()
-            const message = parsedBody.split('=')[1]
+            const data = parsedBody.split('&')
+            const name = data[0].split('=')[1]
+            const message = data[1].split('=')[1]
+            const savedText = `name: ${name}, message: ${message}`
             // fs.writeFileSync('message.txt', message) // sync blocking next code
-            fs.writeFile('message.txt', message, () => {
+            fs.writeFile('message.txt', savedText, () => {
                 res.statusCode = 302
                 res.setHeader('Location', '/')
                 res.end()
